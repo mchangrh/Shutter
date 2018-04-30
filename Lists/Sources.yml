@@ -1,21 +1,38 @@
-reddit_jacop:
-    source: https://www.reddit.com/r/NoFap/comments/3l89jz/the_most_complete_list_of_porn_sites_to_block_in/?ref=share&ref_source=link
-    changes:
-        - Removed / at end of domain
-        - Removed duplicates
-        - Removed hosts format IPs
-        - Created www format with hostnames with www subdomain
-reddit_th0mm:
-    source: https://www.reddit.com/r/NoFap/comments/6cplet/updated_may_2017_host_file_to_block_10848_porn/
-    changes:
-        - Removed duplicates
-        - Removed hosts format IP
-        - Created www format with hostnames with www subdomain
-pi_blocklist_porn_top1m.list_www.txt:
-    source: https://github.com/chadmayfield/my-pihole-blocklists
-    changes:
-        - Added www subdomains
-pi_blocklist_porn_all_www:
-    source: https://github.com/chadmayfield/my-pihole-blocklists
-    changes:
-        - Added www subdomains
+EDITED CUSTOM LISTS:
+    reddit_jacop:
+        source: https://www.reddit.com/r/NoFap/comments/3l89jz/the_most_complete_list_of_porn_sites_to_block_in/?ref=share&ref_source=link
+        changes:
+            - Removed / at end of domain
+            - Removed duplicates
+            - Removed hosts format IPs
+            - Created www format with hostnames with www subdomain
+    reddit_th0mm:
+        source: https://www.reddit.com/r/NoFap/comments/6cplet/updated_may_2017_host_file_to_block_10848_porn/
+        changes:
+            - Removed duplicates
+            - Removed hosts format IP
+            - Created www format with hostnames with www subdomain
+    pi_blocklist_porn_top1m.list_www:
+        source: https://github.com/chadmayfield/my-pihole-blocklists
+        changes:
+            - Added www subdomains
+    pi_blocklist_porn_all_www:
+        source: https://github.com/chadmayfield/my-pihole-blocklists
+        changes:
+            - Added www subdomains
+PUBLIC LISTS:
+    porn1m:
+        source: https://github.com/chadmayfield/my-pihole-blocklists
+        blocks: porn websites
+        note: supplimented by pi_blocklist_porn_top1m_www
+    porn_all:
+        source: https://github.com/chadmayfield/my-pihole-blocklists
+        blocks: porn websites
+        note: supplimented by pi_blocklist_porn_all_www
+    proxylists:
+        source: http://iplists.firehol.org/?ipset=proxylists
+        blocks: proxylists.net open proxies
+    firehol_anonymous:
+        source: http://iplists.firehol.org/?ipset=firehol_anonymous
+        blocks: anonymizing IPs
+        note: blocks tor and tor exists
