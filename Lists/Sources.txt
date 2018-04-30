@@ -1,4 +1,5 @@
-reddit_jacop - source
+reddit_jacop:
+	source
 https://www.reddit.com/r/NoFap/comments/3l89jz/the_most_complete_list_of_porn_sites_to_block_in/?ref=share&ref_source=link
 
 Removed all / and removed all duplicates
@@ -17,3 +18,7 @@ pi_blocklist_porn_top1m.list_www.txt - source
 https://github.com/chadmayfield/my-pihole-blocklists
 
 added www subdomains because they werent blocking
+
+pi_blocklist_porn_all_www - source
+https://github.com/chadmayfield/my-pihole-blocklists
+added www subdomains they werent blocking
