@@ -20,6 +20,8 @@ EDITED CUSTOM LISTS:
         source: https://github.com/chadmayfield/my-pihole-blocklists
         changes:
             - Added www subdomains
+    custom:
+        blocks: nuance domains collected from google
 PUBLIC LISTS:
     porn1m:
         source: https://github.com/chadmayfield/my-pihole-blocklists
