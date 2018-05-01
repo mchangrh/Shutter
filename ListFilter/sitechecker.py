@@ -47,7 +47,11 @@ def http_error(site):
             return True
         else:
             return False
-    except urllib.error:
+    except urllib.error.HTTPError:
+        return False
+    except urllib.error.URLError:
+        return False
+    except Exception:
         return False
 
 
