@@ -40,16 +40,29 @@ def strip_all_ip(filename, output):
                 outfile.write(line)
 
 
-def domain_stripper(filename, output, ban_sites):
+def domain_stripper(filename, output):
     """
     This function strips lines with any of the matched words
     :param filename: Input filename
     :param output: Output filename
-    :param ban_sites: sites to match to
     """
     # Open sitelist ban
-    with open(ban_sites, 'r') as file:
-        sitelist = file.read().splitlines()
+    sitelist = ['tumblr.com',
+                'blogspot.ae', 'blogspot.al', 'blogspot.am', 'blogspot.ba', 'blogspot.ca'
+                'blogspot.bg', 'blogspot.ch', 'blogspot.cl', 'blogspot.co.at', 'blogspot.co.id'
+                'blogspot.be', 'blogspot.co.at', 'blogspot.co.il', 'blogspot.co.ke', 'blogspot.co.nz'
+                'blogspot.co.uk', 'blogspot.co.za', 'blogspot.com.ar', 'blogspot.com.au', 'blogspot.com.br'
+                'blogspot.com.by', 'blogspot.com.au', 'blogspot.com.br', 'blogspot.com.by', 'blogspot.com.co'
+                'blogspot.com.cy', 'blogspot.com.ee', 'blogspot.com.eg', 'blogspot.com.es', 'blogspot.com.mt'
+                'blogspot.com.ng', 'blogspot.com.tr', 'blogspot.com.uy', 'blogspot.cz', 'blogspot.de'
+                'blogspot.dk', 'blogspot.fi', 'blogspot.fr', 'blogspot.gr', 'blogspot.hk'
+                'blogspot.hr', 'blogspot.com.ar', 'blogspot.hu', 'blogspot.ie', 'blogspot.in'
+                'blogspot.is', 'blogspot.it', 'blotspot.jp', 'blogspot.kr', 'blogspot.li'
+                'blogspot.lt', 'blogspot.lu', 'blogspot.md', 'blogspot.mk', 'blogspot.mx'
+                'blogspot.my', 'blogspot.nl', 'blogspot.no', 'blogspot.pe', 'blogspot.pt'
+                'blogspot.qa', 'blogspot.ro', 'blogspot.rs', 'blogspot.ru', 'blogspot.se'
+                'blogspot.sg', 'blogspot.sk', 'blogspot.si', 'blogspot.sn', 'blogspot.tw'
+                'blogspot.ug', 'blogspot.com']
     # Open files to trim
     with open(filename, 'r') as infile, open(output, 'w') as outfile:
         # Loop through files
@@ -65,8 +78,8 @@ def www_checker(filename, output):
         for line in infile:
             if not line.startswith("www."):
                 outfile.write("www." + line)
-            else:
-                outfile.write(line)
+            # Write either way
+            outfile.write(line)
 
 
 class SiteChecker:
@@ -96,11 +109,11 @@ class SiteChecker:
                 valid = SiteChecker.http_error(website)
             # check for validity
             if valid:
-                # Write site to passfile if valid
+                # Write site to pass_file if valid
                 alive_count += 1
                 self.outfile.write(site)
             else:
-                # Print dead status and write site to deadfile
+                # Print dead status and write site to dead_file
                 print(self.name + " dead " + str(dead_count + alive_count) + "  " + website)
                 dead_count += 1
                 self.dead.write(site)
@@ -170,6 +183,3 @@ class SiteChecker:
         self.infile.close()
         self.outfile.close()
         self.dead.close()
-
-
-

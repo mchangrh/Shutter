@@ -1,7 +1,7 @@
 import multiprocessing
-import sitechecker
 import os
 import shutil
+import ListPrepper
 
 # Processes
 num_procs = 4
@@ -12,7 +12,7 @@ def do_work(filename):
     file = "./1in/" + filename
     passed = "./3pass/" + filename + "pass2"
     dead = "./4dead/" + filename + "dead2"
-    proc = sitechecker.Checker(file, passed, dead)
+    proc = ListPrepper.SiteChecker(file, passed, dead)
     proc.pass_one()
     proc.close()
     # move the file out
