@@ -1,4 +1,4 @@
-EDITED CUSTOM LISTS:
+CUSTOM_COMBINED:
     reddit_jacop:
         source: https://www.reddit.com/r/NoFap/comments/3l89jz/the_most_complete_list_of_porn_sites_to_block_in/?ref=share&ref_source=link
         changes:
@@ -12,6 +12,11 @@ EDITED CUSTOM LISTS:
             - Removed duplicates
             - Removed hosts format IP
             - Created www format with hostnames with www subdomain
+    custom:
+        blocks: nuance domains collected from google
+    
+
+EDITED CUSTOM LISTS:
     pi_blocklist_porn_top1m.list_www:
         source: https://github.com/chadmayfield/my-pihole-blocklists
         changes:
@@ -20,8 +25,6 @@ EDITED CUSTOM LISTS:
         source: https://github.com/chadmayfield/my-pihole-blocklists
         changes:
             - Added www subdomains
-    custom:
-        blocks: nuance domains collected from google
 PUBLIC LISTS:
     porn1m:
         source: https://github.com/chadmayfield/my-pihole-blocklists
