@@ -3,133 +3,123 @@ import urllib.request
 import urllib.error
 
 
-class Extractor:
-    pass
+def extract():
+    import tarfile
+    import shutil
+    filename = "adult.tar.gz"
+    site = "ftp://ftp.ut-capitole.fr/pub/reseau/cache/squidguard_contrib/adult.tar.gz"
+    with urllib.request.urlopen(site) as response, open(filename, 'wb') as out_file:
+        shutil.copyfileobj(response, out_file)
+    # Extract all files
+    tar = tarfile.open(filename, "r:gz")
+    tar.extractall()
+    # Clean up the extra mess we made
+    shutil.move('adult/domains', 'domains')
+    shutil.rmtree('adult')
 
 
-class NoIP:
+def check_noip(address):
+    try:
+        socket.inet_aton(address)
+        # works
+        return False
+    except socket.error:
+        # domain
+        return True
+
+
+def strip_all_ip(filename, output):
+    # open files
+    with open(filename, 'r') as infile, open(output, 'w') as outfile:
+        # loop through lines
+        for line in infile:
+            # Strip to avoid \n
+            line_strip = line.strip()
+            # Check that it is a domain
+            if check_noip(line_strip):
+                outfile.write(line)
+
+
+def domain_stripper(filename, output, ban_sites):
     """
-    We can't block IP addresses, so why weigh down the system?
+    This function strips lines with any of the matched words
+    :param filename: Input filename
+    :param output: Output filename
+    :param ban_sites: sites to match to
     """
-    @staticmethod
-    def checker(address):
-        try:
-            socket.inet_aton(address)
-            # works
-            return True
-        except socket.error:
-            # domain
-            return False
-
-    @staticmethod
-    def strip_all_ip(filename, output):
-        # open files
-        with open(filename, 'r') as infile, open(output, 'w') as outfile:
-            # loop through lines
-            for line in infile:
-                # Strip to avoid \n
-                line_strip = line.strip()
-                # Check that it isn't an IP address
-                if NoIP.checker(line_strip):
-                    outfile.write(line)
+    # Open sitelist ban
+    with open(ban_sites, 'r') as file:
+        sitelist = file.read().splitlines()
+    # Open files to trim
+    with open(filename, 'r') as infile, open(output, 'w') as outfile:
+        # Loop through files
+        for line in infile:
+            # if the line matches any of the sites
+            if any(site in line for site in sitelist):
+                # write to file
+                outfile.write(line)
 
 
-
-class DomainFilter:
-    """
-    This class has functions to clean repeat domains
-    """
-    @staticmethod
-    def line_stripper(filename, output, match):
-        """
-        This function strips lines with the matched word
-        :param filename: Input filename
-        :param output: Output filename
-        :param match: Word to match
-        :return:
-        """
-        # Open files
-        with open(filename, 'r') as infile, open(output, 'w') as outfile:
-            # Loop through files
-            for line in infile:
-                # If the line does not match, write to out
-                if match not in line:
-                    outfile.write(line)
-
-    @staticmethod
-    def loop(array):
-        """
-        This function loops through multiple words for stripping
-        :param array: list of phrases to match
-        :return:
-        """
-        # Start the infile name at 1
-        infile = 1
-        for match in array:
-            # Increment filename by 1 each time to show iterations
-            DomainFilter.line_stripper(str(infile), str(infile + 1), match)
-            infile += 1
-
-    @staticmethod
-    def loop_from_file(filename):
-        # Open file
-        with open(filename, 'r') as file:
-            # Loop with all lines in file
-            DomainFilter.loop(file.readlines())
+def www_checker(filename, output):
+    with open(filename, 'r') as infile, open(output, 'w') as outfile:
+        for line in infile:
+            if not line.startswith("www."):
+                outfile.write("www." + line)
+            else:
+                outfile.write(line)
 
 
 class SiteChecker:
-    """
-    This class contains functions that check if a website is valid
-    """
-    @staticmethod
-    def alive_checker(filename, output):
+    def __init__(self, infile, outfile, deadfile):
+        self.infile = open(infile, 'r')
+        self.outfile = open(outfile, 'a')
+        self.dead = open(deadfile, 'a')
+        self.name = infile
+
+    def pass_checker(self, checker):
         """
-        This function checks all the domains in the given file
-        :param filename: Input filename
-        :param output: Output filename
+        This function checks if a site is dead or alive using 1 of 2 methods
+        :param checker: Which checker to use
+        """
+        # Implement dead and alive counter
+        alive_count, dead_count = 0, 0
+        # Loop through all sites in list
+        for site in self.infile:
+            # Strip newlines
+            website = site.strip()
+            # Set valid to False
+            valid = False
+            # Two types of checkers
+            if checker == "resolves":
+                valid = SiteChecker.resolves(website)
+            elif checker == "http_error":
+                valid = SiteChecker.http_error(website)
+            # check for validity
+            if valid:
+                # Write site to passfile if valid
+                alive_count += 1
+                self.outfile.write(site)
+            else:
+                # Print dead status and write site to deadfile
+                print(self.name + " dead " + str(dead_count + alive_count) + "  " + website)
+                dead_count += 1
+                self.dead.write(site)
+        # Print the result of the list
+        print(self.name + "  " + checker + " alive: " + str(alive_count) + " dead: " + str(dead_count))
+
+    def pass_one(self):
+        """
+        This function just runs pass_one
         :return:
         """
-        with open(filename, 'r') as infile, open(output, 'w') as outfile:
-            for site in infile:
-                # Strip to remove \n character
-                website = site.strip()
-                # If it resolves, check if it returns http error
-                if SiteChecker.resolves(website):
-                    # if it does not return an http error
-                    if SiteChecker.http_error(website):
-                        # write to file, it's valid
-                        outfile.write(site)
+        self.pass_checker("resolves")
 
-    @staticmethod
-    def pass_one(filename, output):
-        with open(filename, 'r') as infile, open(output, 'a') as outfile, open('dead', 'a') as dead:
-            for site in infile:
-                # Strip to remove \n character
-                website = site.strip()
-                # If it resolves, check if it returns http error
-                if SiteChecker.resolves(website):
-                    # if it does not return an http error
-                    print(site)
-                    outfile.write(site)
-                else:
-                    print("dead" + site)
-                    dead.write(site)
-
-    @staticmethod
-    def pass_two(filename, output):
-        with open(filename, 'r') as infile, open(output, 'a') as outfile, open('dead', 'a') as dead:
-            for site in infile:
-                # Strip to remove \n character
-                website = site.strip()
-                # if it does not return an http error
-                if SiteChecker.http_error(website):
-                    # write to file, it's valid
-                    print(site)
-                    outfile.write(site)
-                else:
-                    print("dead" + site)
-                    dead.write(site)
+    def pass_two(self):
+        """
+        This function just runs pass_two
+        :return:
+        """
+        self.pass_checker("http_error")
 
     @staticmethod
     def resolves(site):
@@ -161,8 +151,10 @@ class SiteChecker:
             # Normal HTTP responses are less than 400
             if response <= 400:
                 return True
+            # We received an abnormal HTTP response code
             else:
                 return False
+        # Catch all urllib errors
         except urllib.error.HTTPError:
             return False
         except urllib.error.URLError:
@@ -170,13 +162,14 @@ class SiteChecker:
         except Exception:
             return False
 
+    def close(self):
+        """
+        This function just closes all the files
+        :return:
+        """
+        self.infile.close()
+        self.outfile.close()
+        self.dead.close()
 
-class Formatter:
-    @staticmethod
-    def www_checker(filename, output):
-        with open(filename, 'r') as infile, open(output, 'w') as outfile:
-            for line in infile:
-                if not line.startswith("www."):
-                    outfile.write("www." + line)
-                else:
-                    outfile.write(line)
+
+
