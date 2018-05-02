@@ -1,6 +1,8 @@
 import socket
 import urllib.request
 import urllib.error
+import multiprocessing
+import os
 
 
 def extract():
@@ -89,50 +91,71 @@ class SiteChecker:
         self.dead = open(deadfile, 'a')
         self.name = infile
 
-    def pass_checker(self, checker):
+        # Processes
+        num_procs = 4
+        # Create queue
+        self.queue = multiprocessing.JoinableQueue()
+        procs = []
+        for i in range(num_procs):
+            procs.append(multiprocessing.Process(target=SiteChecker.worker))
+            procs[-1].daemon = True
+            procs[-1].start()
+
+        for filename in os.listdir('./1in'):
+            self.queue.put(filename)
+
+        self.queue.join()
+
+        for p in procs:
+            self.queue.put(None)
+
+        self.queue.join()
+
+        for p in procs:
+            p.join()
+
+        # finished
+        self.close()
+
+    def pass_checker(self):
         """
         This function checks if a site is dead or alive using 1 of 2 methods
-        :param checker: Which checker to use
         """
         # Implement dead and alive counter
         alive_count, dead_count = 0, 0
         # Loop through all sites in list
         for site in self.infile:
             # Strip newlines
-            website = site.strip()
-            # Set valid to False
-            valid = False
-            # Two types of checkers
-            if checker == "resolves":
-                valid = SiteChecker.resolves(website)
-            elif checker == "http_error":
-                valid = SiteChecker.http_error(website)
-            # check for validity
-            if valid:
-                # Write site to pass_file if valid
-                alive_count += 1
-                self.outfile.write(site)
-            else:
-                # Print dead status and write site to dead_file
-                print(self.name + " dead " + str(dead_count + alive_count) + "  " + website)
-                dead_count += 1
-                self.dead.write(site)
+            self.queue.put(site)
         # Print the result of the list
-        print(self.name + "  " + checker + " alive: " + str(alive_count) + " dead: " + str(dead_count))
+        print(self.name + " alive: " + str(alive_count) + " dead: " + str(dead_count))
 
-    def pass_one(self):
-        """
-        This function just runs pass_one
-        :return:
-        """
-        self.pass_checker("resolves")
+    # Function to actually do work
+    def do_work(self, site):
+        website = site.strip()
+        # Set valid to False
+        valid = False
+        # Two types of checkers
+        if SiteChecker.resolves(website):
+            if SiteChecker.http_error(website):
+                valid = True
+        if valid:
+            # Write site to pass_file if valid
+            self.outfile.write(site)
+        else:
+            # Print dead status and write site to dead_file
+            self.dead.write(site)
+        self.outfile.flush()
+        self.dead.flush()
 
-    def pass_two(self):
-        """
-        This function just runs pass_two
-        :return:
-        """
-        self.pass_checker("http_error")
+    # Worker function
+    def worker(self):
+        for site in iter(self.queue.get, None):
+            # pass in filename
+            self.do_work(site)
+            # finish task
+            self.queue.task_done()
+        self.queue.task_done()
 
     @staticmethod
     def resolves(site):
