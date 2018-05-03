@@ -2,7 +2,6 @@ import socket
 import urllib.request
 import urllib.error
 import multiprocessing
-import os
 
 
 def extract():
@@ -49,28 +48,13 @@ def domain_stripper(filename, output):
     :param output: Output filename
     """
     # Open sitelist ban
-    sitelist = ['tumblr.com',
-                'blogspot.ae', 'blogspot.al', 'blogspot.am', 'blogspot.ba', 'blogspot.ca'
-                'blogspot.bg', 'blogspot.ch', 'blogspot.cl', 'blogspot.co.at', 'blogspot.co.id'
-                'blogspot.be', 'blogspot.co.at', 'blogspot.co.il', 'blogspot.co.ke', 'blogspot.co.nz'
-                'blogspot.co.uk', 'blogspot.co.za', 'blogspot.com.ar', 'blogspot.com.au', 'blogspot.com.br'
-                'blogspot.com.by', 'blogspot.com.au', 'blogspot.com.br', 'blogspot.com.by', 'blogspot.com.co'
-                'blogspot.com.cy', 'blogspot.com.ee', 'blogspot.com.eg', 'blogspot.com.es', 'blogspot.com.mt'
-                'blogspot.com.ng', 'blogspot.com.tr', 'blogspot.com.uy', 'blogspot.cz', 'blogspot.de'
-                'blogspot.dk', 'blogspot.fi', 'blogspot.fr', 'blogspot.gr', 'blogspot.hk'
-                'blogspot.hr', 'blogspot.com.ar', 'blogspot.hu', 'blogspot.ie', 'blogspot.in'
-                'blogspot.is', 'blogspot.it', 'blotspot.jp', 'blogspot.kr', 'blogspot.li'
-                'blogspot.lt', 'blogspot.lu', 'blogspot.md', 'blogspot.mk', 'blogspot.mx'
-                'blogspot.my', 'blogspot.nl', 'blogspot.no', 'blogspot.pe', 'blogspot.pt'
-                'blogspot.qa', 'blogspot.ro', 'blogspot.rs', 'blogspot.ru', 'blogspot.se'
-                'blogspot.sg', 'blogspot.sk', 'blogspot.si', 'blogspot.sn', 'blogspot.tw'
-                'blogspot.ug', 'blogspot.com']
+    sitelist = ['tumblr.com', 'blogspot.']
     # Open files to trim
     with open(filename, 'r') as infile, open(output, 'w') as outfile:
         # Loop through files
         for line in infile:
-            # if the line matches any of the sites
-            if any(site in line for site in sitelist):
+            # if the line does not match any sites
+            if not(any(site in line for site in sitelist)):
                 # write to file
                 outfile.write(line)
 
@@ -97,12 +81,11 @@ class SiteChecker:
         self.queue = multiprocessing.JoinableQueue()
         procs = []
         for i in range(num_procs):
-            procs.append(multiprocessing.Process(target=SiteChecker.worker))
+            procs.append(multiprocessing.Process(target=SiteChecker.worker(self)))
             procs[-1].daemon = True
             procs[-1].start()
 
-        for filename in os.listdir('./1in'):
-            self.queue.put(filename)
+        SiteChecker.pass_checker(self)
 
         self.queue.join()
 
@@ -152,7 +135,10 @@ class SiteChecker:
     def worker(self):
         for site in iter(self.queue.get, None):
             # pass in filename
+            print('start' + site)
             self.do_work(site)
+            #done
+            print('done' + site)
             # finish task
             self.queue.task_done()
         self.queue.task_done()
