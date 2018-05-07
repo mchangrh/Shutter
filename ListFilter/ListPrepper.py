@@ -62,11 +62,9 @@ def domain_stripper(filename, output):
 def www_checker(filename, output):
     with open(filename, 'r') as infile, open(output, 'w') as outfile:
         for line in infile:
+            # Write a file with just more www
             if not line.startswith("www."):
                 outfile.write("www." + line)
-            # Write either way
-            outfile.write(line)
-
 
 class SiteChecker:
     def __init__(self, infile, outfile, deadfile):

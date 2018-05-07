@@ -2,12 +2,10 @@ import multiprocessing
 import socket
 import urllib.request
 import urllib.error
-# for pretty
-from termcolor import colored
 
 
 class multiproc:
-    def __init__(self, open_name='allsplit_al'):
+    def __init__(self, open_name):
         # counters
         self.deadcount = 0
         self.alivecount = 0
@@ -27,7 +25,23 @@ class multiproc:
         for site in self.infile:
             self.queue.put(site)
         # Run queue
-        self.runqueue()
+        self.queue.join()
+
+        for p in self.procs:
+            self.queue.put(None)
+
+        self.queue.join()
+
+        for p in self.procs:
+            p.join()
+
+        print("FINISHED")
+        print('alive: ' + str(self.alivecount))
+        print('dead: ' + str(self.deadcount))
+        # Finish
+        self.infile.close()
+        self.outfile.close()
+        self.dead.close()
 
     def check_both(self, site):
             website = site.strip()
@@ -37,12 +51,12 @@ class multiproc:
                     valid = True
             # check for valid
             if valid:
-                print(colored(str(self.alivecount + self.deadcount) + " alive " + website, 'green'))
+                print(str(self.alivecount + self.deadcount) + " alive " + website,)
                 self.alivecount += 1
                 self.outfile.write(site)
                 self.outfile.flush()
             else:
-                print(colored(str(self.alivecount + self.deadcount) + " dead " + website, 'red'))
+                print(str(self.alivecount + self.deadcount) + " dead " + website)
                 self.deadcount += 1
                 self.dead.write(site)
                 self.dead.flush()
@@ -94,22 +108,3 @@ class multiproc:
             # finish task
             self.queue.task_done()
         self.queue.task_done()
-
-    def runqueue(self):
-        self.queue.join()
-
-        for p in self.procs:
-            self.queue.put(None)
-
-        self.queue.join()
-
-        for p in self.procs:
-          p.join()
-
-        print(colored("FINISHED", 'blue'))
-        print('alive: ' + str(self.alivecount))
-        print('dead: ' + str(self.deadcount))
-        # Finish
-        self.infile.close()
-        self.outfile.close()
-        self.dead.close()
