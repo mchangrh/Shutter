@@ -1,6 +1,21 @@
+# List Status
+
+| List | All | Passed | Dead | Date |
+|------|----:|-------:|-----:|-----:|
+| Custom | 10365 | 7763 | 2602 | May 7 2018 |
+| UT1 |
+
+### Folder Breakdown:
+> custom:
+>> results: (Results from domain testing)
+>> sources: (Original Sources)
+
+> UT1:
+>> results: (Results from domain testing)
+
 # Sources for all the lists used
 
-## custom_list:
+### custom_list:
 1. [reddit: jacop_](https://www.reddit.com/u/jacop_)
 
    source: [/r/NoFap](https://redd.it/3l89jz)
@@ -46,4 +61,7 @@ changes:
 
 
 ## Public Lists:
+
+
+
 
