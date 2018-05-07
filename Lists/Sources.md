@@ -1,0 +1,49 @@
+# Sources for all the lists used
+
+## custom_list:
+1. [reddit: jacop_](https://www.reddit.com/u/jacop_)
+
+   source: [/r/NoFap](https://redd.it/3l89jz)
+   
+   changes:
+     1. Removed all '/' at end of domains
+     2. Removed duplicates
+     3. Reformatted from hosts format
+     4. Also added www subdomain for websites
+     
+2. [reddit: th0mm_](https://www.reddit.com/u/th0mm_)
+   
+    source: [/r/NoFap](https://redd.it/6cplet)
+    
+    changes: 
+      1. Removed duplicates
+      2. Reformatted from hosts format
+      3. Also added www subdomain for websites
+      
+3. Custom:
+
+   source: Domains collected from Google
+   
+
+## Edited Custom Lists:
+
+### UT1 Blacklist:
+
+source: [Université Toulouse 1 Capitole](https://dsi.ut-capitole.fr/blacklists/index_en.php)
+
+changes: 
+  1. Remove all IP addresses since they cannot be blocked by pi-hole
+  
+  2. Remove all blacklisted domains (mainly tumblr and blogspot)
+  
+  3. Add www subdomains for all websites
+  
+  3. Remove all websites that are dead
+  
+     1. Do not resolve
+     
+     2. Do not return a HTTP response code under 400
+
+
+## Public Lists:
+
