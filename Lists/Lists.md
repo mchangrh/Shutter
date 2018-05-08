@@ -1,9 +1,11 @@
 # List Status
 
-| List | All | Passed | Dead | Date |
-|------|----:|-------:|-----:|-----:|
-| Custom | 10365 | 7763 | 2602 | May 7 2018 |
-| UT1 |
+| List         | Original | All (Post-Strip) | Passed | Dead | Date |
+|--------------|---------:|-----------------:|-------:|-----:|-----:|
+| Custom       | | 10365 | 7763 | 2602 | May 7 2018 |
+| UT1          | 
+| Sinfonietta  | 7054     | 7047             | 
+| Clefspeare13 | 6088     | 5287             |
 
 ### Folder Breakdown:
 > custom:
@@ -11,6 +13,14 @@
 >> sources: (Original Sources)
 
 > UT1:
+>> results: (Results from domain testing)
+
+> Sinfonietta:
+>> sources: (Original files)  
+>> results: (Results from domain testing)
+
+> Clefspeare13:
+>> sources: (Original files)  
 >> results: (Results from domain testing)
 
 # Sources for all the lists used
@@ -48,17 +58,33 @@ source: [Université Toulouse 1 Capitole](https://dsi.ut-capitole.fr/blacklists/
 
 changes: 
   1. Remove all IP addresses since they cannot be blocked by pi-hole
-  
   2. Remove all blacklisted domains (mainly tumblr and blogspot)
-  
   3. Add www subdomains for all websites
-  
   3. Remove all websites that are dead
-  
      1. Do not resolve
-     
      2. Do not return a HTTP response code under 400
 
+### Sinfonietta:
+
+source: [Github](https://github.com/Sinfonietta/hostfiles)
+
+changes:
+  1. Reformatted from hosts format
+  2. Remove all blacklisted domains (mainly tumblr and blogspot)
+  3. Remove all websites that are dead
+     1. Do not resolve
+     2. Do not return a HTTP response code under 400
+     
+### Clefspeare13:
+
+source: [Github](https://github.com/Clefspeare13/pornhosts)
+
+changes:
+  1. Reformatted from hosts format
+  2. Remove all blacklisted domains (mainly tumblr and blogspot)
+  3. Remove all websites that are dead
+     1. Do not resolve
+     2. Do not return a HTTP response code under 400
 
 ## Public Lists:
 
