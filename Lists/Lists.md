@@ -1,11 +1,11 @@
 # List Status
 
-| List         | Original | All (Post-Strip) | Passed | Dead | Date |
-|--------------|---------:|-----------------:|-------:|-----:|-----:|
-| Custom       | | 10365 | 7763 | 2602 | May 7 2018 |
-| UT1          | 
-| Sinfonietta  | 7054     | 7047             | 
-| Clefspeare13 | 6088     | 5287             |
+| List         | Original | All / Post-Strip | Passed | Dead | Date       | Commit  |
+|--------------|---------:|-----------------:|-------:|-----:|-----------:|--------:|
+| Custom       |          | 10365            | 7763   | 2602 | May 7 2018 |         |
+| UT1          | 1938667  | 617956           | 
+| Sinfonietta  | 7054     | 7047             | 4283   | 2765 | May 7 2018 | 1904ea3 |
+| Clefspeare13 | 6088     | 5287             | 2859   | 2429 | May 7 2017 | d9b61ae |
 
 ### Folder Breakdown:
 > custom:
@@ -89,5 +89,20 @@ changes:
 ## Public Lists:
 
 
+# Maintaining the Lists
+### Process for Updating (Once/ Month)
+1. Download new File
+   1. Check if hashes differ
+2. Apply same stripping and purging
+3. awk using all to find new sites
+   1. Run sites through checker
+4. Recheck pass sites from last run
+5. Test new sites
+
+### Process for Validation
+1. Find sites in all but not in pass or dead
+   1. Run sites through checker
+2. Re-run dead with 30 concurrent threads
+3. Re-run pass 
 
 
