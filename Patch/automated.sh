@@ -5,3 +5,8 @@ wget -O /etc/dnsmasq.d/05-restrict.conf https://raw.githubusercontent.com/mchang
 curl https://raw.githubusercontent.com/mchangrh/Shutter/master/Patch/gravity.diff | patch /opt/pihole/gravity.sh
 # Add to hosts file
 curl https://raw.githubusercontent.com/mchangrh/Shutter/master/Patch/hosts >> /etc/hosts
+# Wrap up and apply the updates
+# dnsmasq list
+systemctl restart dnsmasq
+# pihole list
+pihole -g
