@@ -1,0 +1,13 @@
+--- gravity.sh	2018-05-11 17:46:36.805278900 -0500
++++ gravity-patch.sh	2018-05-11 17:46:22.214275100 -0500
+@@ -50,8 +50,8 @@
+   source "${setupVars}"
+ 
+   # Remove CIDR mask from IPv4/6 addresses
+-  IPV4_ADDRESS="${IPV4_ADDRESS%/*}"
+-  IPV6_ADDRESS="${IPV6_ADDRESS%/*}"
++  IPV4_ADDRESS="0.0.0.0"
++  IPV6_ADDRESS="$::"
+ 
+   # Determine if IPv4/6 addresses exist
+   if [[ -z "${IPV4_ADDRESS}" ]] && [[ -z "${IPV6_ADDRESS}" ]]; then
